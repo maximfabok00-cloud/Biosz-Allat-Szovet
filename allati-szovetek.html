@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Állati szövetek</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #1d2330;
+    --muted: #5b6475;
+    --line: #e3e6ec;
+    --hamszovet: #2f7dd1;
+    --kotoszovet: #d9822b;
+    --tamaszto: #8a5cc9;
+    --izom: #d44a4a;
+    --ideg: #2a9d6f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b;
+      --card: #1b2029;
+      --text: #e8ebf1;
+      --muted: #9aa3b5;
+      --line: #2b3240;
+      --hamszovet: #5aa2ee;
+      --kotoszovet: #f0a04e;
+      --tamaszto: #b08af0;
+      --izom: #f07070;
+      --ideg: #4cc795;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 56px; }
+  header { margin-bottom: 20px; }
+  h1 { font-size: 1.8rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0; }
+
+  .tissue {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 18px 18px;
+    margin-bottom: 18px;
+  }
+  .tissue > h2 {
+    margin: 0 0 10px;
+    font-size: 1.25rem;
+    color: var(--accent);
+  }
+  .tissue > h2 .num {
+    display: inline-block;
+    min-width: 1.6em;
+    height: 1.6em;
+    line-height: 1.6em;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.9rem;
+    margin-right: 8px;
+  }
+  .hamszovet { --accent: var(--hamszovet); }
+  .koto      { --accent: var(--kotoszovet); }
+  .izom      { --accent: var(--izom); }
+  .ideg      { --accent: var(--ideg); }
+  .tamaszto  { --accent: var(--tamaszto); }
+
+  ul { margin: 6px 0; padding-left: 1.2em; }
+  li { margin: 3px 0; }
+  .lead { margin: 4px 0 10px; color: var(--muted); }
+
+  .group {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+  }
+  .group > h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .sub-card {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--accent) 6%, var(--card));
+  }
+  .sub-card h4 { margin: 0 0 4px; font-size: 1rem; }
+  .sub-card p, .sub-card ul { margin: 0; font-size: 0.95rem; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 4px; }
+  .tag {
+    font-size: 0.82rem;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 14%, var(--card));
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    padding: 1px 8px;
+    border-radius: 6px;
+    margin-top: 6px;
+    background: var(--line);
+    color: var(--text);
+  }
+  .key {
+    background: color-mix(in srgb, var(--accent) 12%, var(--card));
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 10px;
+  }
+
+  /* ---------- Gyakorló dolgozat ---------- */
+  .jump {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--hamszovet);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .test {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 28px;
+  }
+  .test h2 { margin: 0 0 6px; font-size: 1.4rem; }
+  .test h3 { margin: 22px 0 8px; font-size: 1.05rem; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+  .controls button {
+    font: inherit;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .controls button.primary { background: var(--hamszovet); border-color: var(--hamszovet); color: #fff; }
+  .easy { font-size: 0.9rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  table.qt { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .qt th, .qt td { border: 1px solid var(--line); padding: 6px; vertical-align: middle; }
+  .qt th { background: color-mix(in srgb, var(--hamszovet) 10%, var(--card)); text-align: left; font-size: 0.9rem; }
+  .qt col.c1 { width: 27%; }
+  .qt col.c2 { width: 33%; }
+  .qt col.c3 { width: 40%; }
+  .cell { display: flex; align-items: center; gap: 4px; }
+  .qt input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    font: inherit;
+    font-size: 16px;
+    padding: 6px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .qt input[type="text"]:read-only { opacity: 0.85; }
+  .qt input.ok  { border-color: #2a9d6f; background: color-mix(in srgb, #2a9d6f 16%, var(--card)); }
+  .qt input.bad { border-color: #d44a4a; background: color-mix(in srgb, #d44a4a 14%, var(--card)); }
+  .mark { width: 1.2em; text-align: center; font-weight: 700; }
+  .sentences {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 6px 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .sentences li { margin: 2px 0; }
+  .sentences b { display: inline-block; min-width: 1.6em; color: var(--hamszovet); }
+  .result {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--hamszovet) 8%, var(--card));
+  }
+  .result[hidden] { display: none; }
+  @media print {
+    body.print-test .tissue, body.print-test header, body.print-test .controls, body.print-test .result { display: none; }
+    body.print-test .test { border: none; margin-top: 0; }
+    body.print-test .qt input[type="text"] { border: none; border-bottom: 1px solid #000; background: none; }
+    body.print-test .mark { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Állati szövetek</h1>
+    <p class="sub">Sejtek + sejtközötti állomány</p>
+    <a class="jump" href="#dolgozat">📝 Ugrás a gyakorló dolgozathoz</a>
+  </header>
+
+  <!-- 1. HÁMSZÖVETEK -->
+  <section class="tissue hamszovet">
+    <h2><span class="num">1</span>Hámszövetek</h2>
+    <ul>
+      <li>Szorosan illeszkedő sejtek</li>
+      <li>Véd, határol és összekapcsol a (külső és belső) környezettel</li>
+      <li>Minimális sejtközötti állomány</li>
+    </ul>
+    <div class="group">
+      <h3>Csoportosítás</h3>
+      <ul>
+        <li><strong>Rétegzettség alapján:</strong> egy- vagy többrétegű</li>
+        <li><strong>Alak alapján:</strong> laphám, köbhám, hengerhám</li>
+        <li><strong>Funkció alapján:</strong> lehet fedőhám vagy mirigyhám</li>
+        <li>Lehet elszarusodó vagy el nem szarusodó</li>
+        <li>Nyúlványok, csillók előfordulhatnak</li>
+      </ul>
+    </div>
+    <div class="key"><strong>Előfordulás:</strong> bőrfelszín, szervek belső borítása, nyálkahártya, mirigyek, stb.</div>
+  </section>
+
+  <!-- 2. KÖTŐ- ÉS TÁMASZTÓSZÖVETEK -->
+  <section class="tissue koto">
+    <h2><span class="num">2</span>Kötő- és támasztószövetek</h2>
+
+    <div class="group" style="border-top:none;margin-top:0;padding-top:0;">
+      <h3>a) Kötőszövetek</h3>
+      <p class="lead">Gazdag sejtközötti állomány (a sejtek termelik), lazán elhelyezkedő sejtek, nincs szoros kapcsolat.</p>
+      <div class="grid">
+        <div class="sub-card">
+          <h4>1. Lazarostos kötőszövet</h4>
+          <p>Szervek, szövetek között térkitöltő szerep, erek – táplál.</p>
+        </div>
+        <div class="sub-card">
+          <h4>2. Tömöttrostos kötőszövet</h4>
+          <p>Pl. inak, erős kötegekbe rendeződött rostok.</p>
+        </div>
+        <div class="sub-card">
+          <h4>3. Zsírszövet</h4>
+          <p>Zsír raktározására módosult sejtek, mechanikai védelem, hőszigetelés.</p>
+        </div>
+        <div class="sub-card">
+          <h4>4. Vér</h4>
+          <p>Különleges kötőszövet, anyagot és légzési gázokat szállít, sejtközötti állománya folyadék.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="group tamaszto">
+      <h3>b) Támasztószövetek</h3>
+      <p class="lead">Alakot, formát ad, véd, belső szilárd vázat alkotnak; a sejtek nem illeszkednek szorosan.</p>
+      <div class="grid">
+        <div class="sub-card">
+          <h4>1. Porcszövet</h4>
+          <p>Sejtközötti állományában rugalmas rostok és mészsók is találhatók; a sejtek kettesével, hármasával helyezkednek el.</p>
+        </div>
+        <div class="sub-card">
+          <h4>2. Csontszövet</h4>
+          <p>Sejtközötti állományát mészsók szilárdítják; nyúlványos sejtek, melyek körkörösen rendeződnek el.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. IZOMSZÖVETEK -->
+  <section class="tissue izom">
+    <h2><span class="num">3</span>Izomszövetek</h2>
+    <p class="lead">Összehúzódásra és elernyedésre képes szövetek, mozgást tesznek lehetővé.</p>
+    <div class="grid">
+      <div class="sub-card">
+        <h4>1. Simaizom</h4>
+        <ul>
+          <li>Belső szervek izomzata</li>
+          <li>Lassú, tartós összehúzódás</li>
+          <li>Nem képes nagy erő kifejtésére</li>
+        </ul>
+        <span class="badge">Akaratlagosan nem irányítható</span>
+      </div>
+      <div class="sub-card">
+        <h4>2. Harántcsíkolt izom</h4>
+        <ul>
+          <li>Mikroszkópban a rostokra merőleges csíkozottság</li>
+          <li>Vázizmok</li>
+          <li>Gyors, nagy erő, fárad</li>
+        </ul>
+        <span class="badge">Akaratlagosan irányítható</span>
+      </div>
+      <div class="sub-card">
+        <h4>3. Szívizom</h4>
+        <ul>
+          <li>Csíkozottságot mutat</li>
+          <li>Elágazó nyalábok</li>
+          <li>Hosszú ideig képes nagy erő kifejtésére</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. IDEGSZÖVET -->
+  <section class="tissue ideg">
+    <h2><span class="num">4</span>Idegszövet</h2>
+    <ul>
+      <li>Idegsejtek és támasztósejtek alkotják</li>
+      <li>Gerincvelő, agyvelő, idegek felépítése</li>
+      <li><strong>Ingerelhetőség:</strong> a rövid nyúlvány felveszi, a hosszú vezeti az ingerületet</li>
+      <li>A sejtközötti állomány szigetel</li>
+    </ul>
+    <div class="key"><strong>Idegrost</strong> = velőshüvellyel borított idegsejt-nyúlvány</div>
+  </section>
+
+  <!-- GYAKORLÓ DOLGOZAT -->
+  <section class="test" id="dolgozat">
+    <h2>📝 Gyakorló dolgozat – Állati szövetek</h2>
+    <p class="lead">Először tanuld meg a jegyzetet, aztán próbáld meg a dolgozatot <strong>jegyzet nélkül</strong>!</p>
+
+    <div class="controls">
+      <button class="primary" id="btn-check" type="button">Ellenőrzés</button>
+      <button id="btn-solve" type="button">Megoldás mutatása</button>
+      <button id="btn-reset" type="button">Törlés</button>
+      <button id="btn-print" type="button">Nyomtatás</button>
+      <label class="easy"><input type="checkbox" id="easy"> Könnyített mód (a nevek már be vannak írva)</label>
+    </div>
+
+    <h3>1. feladat – Írd be a szövetfajták nevét a táblázatba!</h3>
+    <p class="lead">A kötőszövetekhez 4, a támasztószövetekhez 2, az izomszövetekhez 3 fajta tartozik. A sorrend nem számít.</p>
+
+    <h3>2. feladat – Írd be a mondatok betűjelét a megfelelő szövet mellé!</h3>
+    <p class="lead">Minden mondat pontosan egy szövetfajtára igaz, és minden szövethez 2 mondat tartozik. Olvasd el az alábbi mondatokat, és a betűjeleket a táblázat jobb oldali oszlopába írd (pl. <em>A, D</em>).</p>
+
+    <table class="qt">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+      <thead>
+        <tr><th>Csoport</th><th>Szövetfajta</th><th>Mondatok betűjele</th></tr>
+      </thead>
+      <tbody>
+        <!-- Hámszövet -->
+        <tr>
+          <td colspan="2"><div class="cell"><input type="text" class="nm" data-key="ham" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="ham" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <!-- Kötőszövetek -->
+        <tr>
+          <td rowspan="4"><div class="cell"><input type="text" class="nm" data-key="kotoG" placeholder="csoport" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="nm" data-key="lazar" data-group="koto" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="lazar" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <tr>
+          <td><div class="cell"><input type="text" class="nm" data-key="tomott" data-group="koto" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="tomott" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <tr>
+          <td><div class="cell"><input type="text" class="nm" data-key="zsir" data-group="koto" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="zsir" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <tr>
+          <td><div class="cell"><input type="text" class="nm" data-key="ver" data-group="koto" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="ver" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <!-- Támasztószövetek -->
+        <tr>
+          <td rowspan="2"><div class="cell"><input type="text" class="nm" data-key="tamG" placeholder="csoport" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="nm" data-key="porc" data-group="tam" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="porc" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <tr>
+          <td><div class="cell"><input type="text" class="nm" data-key="csont" data-group="tam" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="csont" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <!-- Izomszövetek -->
+        <tr>
+          <td rowspan="3"><div class="cell"><input type="text" class="nm" data-key="izomG" placeholder="csoport" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="nm" data-key="sima" data-group="izom" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="sima" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <tr>
+          <td><div class="cell"><input type="text" class="nm" data-key="harant" data-group="izom" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="harant" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <tr>
+          <td><div class="cell"><input type="text" class="nm" data-key="sziv" data-group="izom" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="sziv" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+        <!-- Idegszövet -->
+        <tr>
+          <td colspan="2"><div class="cell"><input type="text" class="nm" data-key="ideg" placeholder="szövet neve" autocomplete="off"><span class="mark"></span></div></td>
+          <td><div class="cell"><input type="text" class="lt" data-key="ideg" placeholder="betűjelek" autocomplete="off"><span class="mark"></span></div></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="result" id="res" role="status" hidden></div>
+
+    <h3>Mondatok</h3>
+    <ul class="sentences" id="mondatok"></ul>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  // [betűjel, szövet kulcsa, mondat]
+  var SENT = [
+    ['A', 'ham',    'Sejtjei szorosan illeszkednek egymáshoz, sejtközötti állománya minimális.'],
+    ['B', 'csont',  'Sejtközötti állományát mészsók szilárdítják.'],
+    ['C', 'ver',    'Sejtközötti állománya folyadék.'],
+    ['D', 'sima',   'Lassan, de tartósan húzódik össze, nagy erő kifejtésére nem képes.'],
+    ['E', 'tomott', 'Erős kötegekbe rendeződött rostokból áll.'],
+    ['F', 'ideg',   'A gerincvelő, az agyvelő és az idegek ebből a szövetből épülnek fel.'],
+    ['G', 'zsir',   'Zsír raktározására módosult sejtekből áll.'],
+    ['H', 'sziv',   'Hosszú ideig képes nagy erő kifejtésére.'],
+    ['I', 'porc',   'Sejtközötti állományában rugalmas rostok és mészsók is találhatók.'],
+    ['J', 'lazar',  'Térkitöltő szerepű a szervek és szövetek között.'],
+    ['K', 'harant', 'Akaratunkkal irányítható, gyorsan és nagy erővel húzódik össze, de elfárad.'],
+    ['L', 'ham',    'Véd, határol; borítja a bőr felszínét és a szervek belső felszínét.'],
+    ['M', 'ideg',   'Rövid nyúlványa felveszi, hosszú nyúlványa vezeti az ingerületet.'],
+    ['N', 'ver',    'Anyagokat és légzési gázokat szállít.'],
+    ['O', 'csont',  'Nyúlványos sejtjei körkörösen rendeződnek el.'],
+    ['P', 'sima',   'A belső szervek (például a bél) izomzata, akaratunktól függetlenül működik.'],
+    ['Q', 'zsir',   'Mechanikai védelmet és hőszigetelést nyújt.'],
+    ['R', 'tomott', 'Ilyen szövet alkotja például az inakat.'],
+    ['S', 'sziv',   'Csíkozottságot mutat, rostjai elágazó nyalábokat alkotnak.'],
+    ['T', 'porc',   'Sejtjei kettesével, hármasával helyezkednek el.'],
+    ['U', 'lazar',  'Ereket tartalmaz, amelyek a környező szöveteket táplálják.'],
+    ['V', 'harant', 'A vázizmok szövete; mikroszkópban a rostokra merőleges csíkozottság látszik rajta.']
+  ];
+
+  var NAMES = {
+    ham: 'Hámszövet', kotoG: 'Kötőszövet', lazar: 'Lazarostos kötőszövet',
+    tomott: 'Tömöttrostos kötőszövet', zsir: 'Zsírszövet', ver: 'Vér',
+    tamG: 'Támasztószövet', porc: 'Porcszövet', csont: 'Csontszövet',
+    izomG: 'Izomszövet', sima: 'Simaizom', harant: 'Harántcsíkolt izom',
+    sziv: 'Szívizom', ideg: 'Idegszövet'
+  };
+  // ékezet nélküli, kisbetűs alakra illesztünk
+  var MATCH = {
+    ham: /^ham/, kotoG: /^koto/, lazar: /^laza/, tomott: /^tomott/, zsir: /^zsir/, ver: /^ver$/,
+    tamG: /^tamaszt/, porc: /^porc/, csont: /^csont/,
+    izomG: /^izom/, sima: /^sima/, harant: /^(harant|csikolt)/, sziv: /^sziv/, ideg: /^ideg/
+  };
+
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var norm = function (s) {
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
+  };
+
+  // mondatok kirajzolása
+  var ul = $('#mondatok');
+  SENT.forEach(function (s) {
+    var li = document.createElement('li');
+    var b = document.createElement('b');
+    b.textContent = s[0] + ')';
+    li.appendChild(b);
+    li.appendChild(document.createTextNode(' ' + s[2]));
+    ul.appendChild(li);
+  });
+
+  var expected = {};
+  SENT.forEach(function (s) { (expected[s[1]] = expected[s[1]] || []).push(s[0]); });
+
+  var NAME_TOTAL = $$('input.nm').length;
+  var LET_TOTAL = SENT.length;
+  var res = $('#res');
+  var easy = $('#easy');
+
+  function setMark(inp, ok) {
+    inp.classList.add(ok ? 'ok' : 'bad');
+    inp.nextElementSibling.textContent = ok ? '✓' : '✗';
+  }
+  function clearMarks() {
+    $$('.qt input[type="text"]').forEach(function (i) { i.classList.remove('ok', 'bad'); });
+    $$('.qt .mark').forEach(function (m) { m.textContent = ''; });
+  }
+
+  function check() {
+    clearMarks();
+    var eff = {}, nameOk = 0;
+
+    ['ham', 'kotoG', 'tamG', 'izomG', 'ideg'].forEach(function (k) {
+      var inp = $('input.nm[data-key="' + k + '"]');
+      var ok = MATCH[k].test(norm(inp.value));
+      if (ok) { nameOk++; eff[k] = k; }
+      setMark(inp, ok);
+    });
+
+    ['koto', 'tam', 'izom'].forEach(function (g) {
+      var inps = $$('input.nm[data-group="' + g + '"]');
+      var keys = inps.map(function (i) { return i.dataset.key; });
+      var used = {};
+      inps.forEach(function (inp) {
+        var v = norm(inp.value);
+        var m = keys.filter(function (k) { return !used[k] && MATCH[k].test(v); })[0];
+        if (m) { used[m] = 1; nameOk++; eff[inp.dataset.key] = m; }
+        setMark(inp, !!m);
+      });
+    });
+
+    var letOk = 0;
+    $$('input.lt').forEach(function (inp) {
+      var key = eff[inp.dataset.key] || inp.dataset.key;
+      var exp = expected[key] || [];
+      var got = (inp.value.toUpperCase().match(/[A-V]/g) || []).filter(function (c, i, a) { return a.indexOf(c) === i; });
+      var hits = got.filter(function (c) { return exp.indexOf(c) > -1; }).length;
+      letOk += hits;
+      setMark(inp, got.length === exp.length && hits === exp.length);
+    });
+
+    var total = NAME_TOTAL + LET_TOTAL, got = nameOk + letOk, pct = got / total, msg;
+    if (got === total) msg = 'Hibátlan! Nagyon ügyes vagy! 🎉';
+    else if (pct >= 0.8) msg = 'Nagyon jó! Nézd át a pirosakat, és próbáld újra.';
+    else if (pct >= 0.5) msg = 'Jó úton jársz. A jegyzet alapján javítsd a pirosakat, aztán ellenőrizz újra.';
+    else msg = 'Még gyakorolj egy kicsit a jegyzettel, aztán próbáld újra – menni fog!';
+
+    res.hidden = false;
+    res.innerHTML = '<strong>Nevek: ' + nameOk + ' / ' + NAME_TOTAL + '</strong> · <strong>Betűk jó helyen: ' +
+      letOk + ' / ' + LET_TOTAL + '</strong><br>' + msg;
+  }
+
+  function fillNames(on) {
+    $$('input.nm').forEach(function (i) {
+      i.value = on ? NAMES[i.dataset.key] : '';
+      i.readOnly = on;
+    });
+  }
+
+  function reset() {
+    $$('.qt input[type="text"]').forEach(function (i) { i.value = ''; i.readOnly = false; });
+    easy.checked = false;
+    clearMarks();
+    res.hidden = true;
+  }
+
+  function solve() {
+    fillNames(true);
+    $$('input.lt').forEach(function (i) { i.value = (expected[i.dataset.key] || []).join(', '); });
+    check();
+  }
+
+  $('#btn-check').addEventListener('click', check);
+  $('#btn-solve').addEventListener('click', solve);
+  $('#btn-reset').addEventListener('click', reset);
+  easy.addEventListener('change', function () { clearMarks(); res.hidden = true; fillNames(easy.checked); });
+  $('#btn-print').addEventListener('click', function () {
+    document.body.classList.add('print-test');
+    window.print();
+  });
+  window.addEventListener('afterprint', function () { document.body.classList.remove('print-test'); });
+})();
+</script>
+</body>
+</html>
